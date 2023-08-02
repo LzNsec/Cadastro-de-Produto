@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PRODUTOS 100
+
+typedef struct {
+    char nome[50];
+    char descricao[100];
+    float valor;
+    int disponivel;
+} Produto;
+
+void cadastrarProduto(Produto* produtos, int* quantidade) {
+    Produto novoProduto;
+    printf("Nome do produto: ");
+    scanf("%s", novoProduto.nome);
+    printf("Descrição do produto: ");
+    scanf(" %[^\n]s", novoProduto.descricao);
+    printf("Valor do produto: ");
+    scanf("%f", &novoProduto.valor);
+    printf("Disponível para venda (1 - sim, 0 - não): ");
+    scanf("%d", &novoProduto.disponivel);
+
+    produtos[*quantidade] = novoProduto;
+    (*quantidade)++;
+}
+
+void listarProdutos(Produto* produtos, int quantidade) {
+    printf("\n--- Lista de Produtos ---\n");
+    printf("Nome\t\tValor\n");
+    printf("-------------------------\n");
+    for (int i = 0; i < quantidade; i++) {
+        if (produtos[i].disponivel) {
+            printf("%s\t%.2f\n", produtos[i].nome, produtos[i].valor);
+        }
+    }
+    printf("-------------------------\n");
+}
+
+void ordenarProdutos(Produto* produtos, int quantidade) {
+    int i, j;
+    Produto temp;
+    for (i = 0; i < quantidade - 1; i++) {
+        for (j = i + 1; j < quantidade; j++) {
+            if (produtos[i].valor > produtos[j].valor) {
+                temp = produtos[i];
+                produtos[i] = produtos[j];
+                produtos[j] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    Produto produtos[MAX_PRODUTOS];
+    int quantidade = 0;
+    int opcao;
+
+    do {
+        printf("\n----- Menu -----\n");
+        printf("1. Cadastrar novo produto\n");
+        printf("2. Listar produtos\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarProduto(produtos, &quantidade);
+                ordenarProdutos(produtos, quantidade);
+                listarProdutos(produtos, quantidade);
+                break;
+            case 2:
+                listarProdutos(produtos, quantidade);
+                break;
+            case 3:
+                printf("Saindo do programa...\n");
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 3);
+
+    return 0;
+}
